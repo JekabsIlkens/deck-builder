@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\TokenController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TokenController;
 
 Route::post('/tokens', [TokenController::class, 'store'])
     ->middleware('throttle:5,1');

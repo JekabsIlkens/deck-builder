@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Tokens\StoreTokenRequest;
 use App\Http\Resources\Tokens\TokenResource;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class TokenController extends Controller
 {
@@ -17,7 +17,7 @@ class TokenController extends Controller
 
         $user = User::where('email', $validated['email'])->first();
 
-        if (!$user || !Hash::check($validated['password'], $user->password)) {
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials!'], 401);
         }
 
