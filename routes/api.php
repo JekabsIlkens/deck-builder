@@ -2,11 +2,12 @@
 
 use App\Enums\PermissionsEnum;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TokenController;
 
-// Get Bearer Token
+Route::post('/tokens', [TokenController::class, 'store'])->middleware('throttle:5,1');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    // Delete Bearer Token
+    Route::delete('/tokens', [TokenController::class, 'destroy']);
 
     Route::group(['middleware' => ['permission:'.PermissionsEnum::MANAGE_USERS->value]], function () {
         // Users CRUD
