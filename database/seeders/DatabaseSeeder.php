@@ -2,9 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PermissionsEnum;
+use App\Enums\RolesEnum;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +17,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $adminRole = Role::create(['name' => RolesEnum::ADMIN->value]);
+        $userRole = Role::create(['name' => RolesEnum::USER->value]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $manageUsers = Permission::create(['name' => PermissionsEnum::MANAGE_USERS->value]);
+        $manageDecks = Permission::create(['name' => PermissionsEnum::MANAGE_DECKS->value]);
+
+        $adminRole->givePermissionTo([$manageUsers, $manageDecks]);
+        $userRole->givePermissionTo([$manageDecks]);
+
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@mail.com',
+            'password' => Hash::make('password'),
+        ])->assignRole($adminRole);
+
+        User::create([
+            'name' => 'User',
+            'email' => 'user@mail.com',
+            'password' => Hash::make('password'),
+        ])->assignRole($userRole);
     }
 }
